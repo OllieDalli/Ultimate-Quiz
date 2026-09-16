@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wigan Quizzers</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .round-type-banner {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto 14px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.12);
+            font-size: .82rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        #song-audio { width: 100%; margin: 10px 0 18px; }
+        .song-instruction { margin: 0 0 16px; font-weight: 700; }
+    </style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- HOME -->
+
+    <section id="home-screen" class="screen active">
+
+        <div class="hero">
+
+            <div class="logo">
+                WIGAN<span>QUIZZERS</span>
+            </div>
+
+            <p class="tagline">
+                Think fast. Score big.
+            </p>
+
+            <div class="home-buttons">
+
+                <button
+                    id="show-create"
+                    class="primary-button"
+                    type="button"
+                >
+                    Create Game
+                </button>
+
+                <button
+                    id="show-join"
+                    class="secondary-button"
+                    type="button"
+                >
+                    Join Game
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CREATE -->
+
+    <section id="create-screen" class="screen">
+
+        <div class="card">
+
+            <button
+                class="back-button"
+                id="back-create"
+                type="button"
+            >
+                ← Back
+            </button>
+
+            <h1>Create Game</h1>
+
+            <p class="muted">
+                Enter your name to create a new lobby.
+            </p>
+
+            <form id="create-form">
+
+                <label for="host-name">
+                    Your name
+                </label>
+
+                <input
+                    id="host-name"
+                    type="text"
+                    maxlength="20"
+                    autocomplete="off"
+                    required
+                    placeholder="Enter your name"
+                >
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Create Lobby
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- JOIN -->
+
+    <section id="join-screen" class="screen">
+
+        <div class="card">
+
+            <button
+                class="back-button"
+                id="back-join"
+                type="button"
+            >
+                ← Back
+            </button>
+
+            <h1>Join Game</h1>
+
+            <p class="muted">
+                Enter the lobby code your host gave you.
+            </p>
+
+            <form id="join-form">
+
+                <label for="join-code">
+                    Game code
+                </label>
+
+                <input
+                    id="join-code"
+                    type="text"
+                    maxlength="5"
+                    autocomplete="off"
+                    placeholder="ABCDE"
+                    required
+                >
+
+                <label for="player-name">
+                    Your name
+                </label>
+
+                <input
+                    id="player-name"
+                    type="text"
+                    maxlength="20"
+                    autocomplete="off"
+                    placeholder="Enter your name"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    Join Lobby
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOBBY -->
+
+    <section id="lobby-screen" class="screen">
+
+        <div class="game-container">
+
+            <div class="top-bar">
+
+                <div>
+                    <span class="small-label">
+                        GAME CODE
+                    </span>
+
+                    <strong id="lobby-code">
+                        -----
+                    </strong>
+                </div>
+
+                <div id="host-badge" class="badge hidden">
+                    HOST
+                </div>
+
+            </div>
+
+            <div class="lobby-header">
+
+                <p class="eyebrow">
+                    WIGAN QUIZZERS
+                </p>
+
+                <h1>
+                    Ready to play?
+                </h1>
+
+                <p class="muted">
+                    Share the game code with everyone.
+                </p>
+
+            </div>
+
+            <div class="players-card">
+
+                <div class="section-title">
+                    <span>Players</span>
+
+                    <span id="player-count">
+                        0
+                    </span>
+                </div>
+
+                <div id="players-list"></div>
+
+            </div>
+
+            <button
+                id="start-game-button"
+                class="primary-button hidden"
+                type="button"
+            >
+                Start Round 1
+            </button>
+
+            <p
+                id="lobby-message"
+                class="status-message"
+            ></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- GAME -->
+
+    <section id="game-screen" class="screen">
+
+        <div class="game-container">
+
+            <div class="game-header">
+
+                <div>
+                    <span class="small-label">
+                        ROUND
+                    </span>
+
+                    <strong id="round-number">
+                        1
+                    </strong>
+                </div>
+
+                <div id="game-score">
+                    0 points
+                </div>
+
+            </div>
+
+
+            <!-- PLAYER SELECTION -->
+
+            <div
+                id="selection-phase"
+                class="game-phase"
+            >
+
+                <div class="phase-icon">
+                    🎲
+                </div>
+
+                <p class="eyebrow">
+                    NEXT PLAYER
+                </p>
+
+                <h1>
+                    Selecting...
+                </h1>
+
+                <div
+                    id="selected-player-name"
+                    class="selected-player"
+                >
+                    -
+                </div>
+
+                <p
+                    id="selection-message"
+                    class="muted"
+                >
+                    The next player is being selected.
+                </p>
+
+            </div>
+
+
+            <!-- DIFFICULTY -->
+
+            <div
+                id="difficulty-phase"
+                class="game-phase hidden"
+            >
+
+                <p class="eyebrow">
+                    IT'S YOUR TURN
+                </p>
+
+                <h1>
+                    Choose your difficulty
+                </h1>
+
+                <p class="muted">
+                    Higher difficulty means more points.
+                </p>
+
+                <div class="difficulty-grid">
+
+                    <button
+                        class="difficulty easy"
+                        data-difficulty="easy"
+                        type="button"
+                    >
+                        <span>Easy</span>
+                        <strong>1 POINT</strong>
+                    </button>
+
+                    <button
+                        class="difficulty medium"
+                        data-difficulty="medium"
+                        type="button"
+                    >
+                        <span>Medium</span>
+                        <strong>2 POINTS</strong>
+                    </button>
+
+                    <button
+                        class="difficulty hard"
+                        data-difficulty="hard"
+                        type="button"
+                    >
+                        <span>Hard</span>
+                        <strong>3 POINTS</strong>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUESTION -->
+
+            <div
+                id="question-phase"
+                class="game-phase hidden"
+            >
+
+                <div class="question-meta">
+
+                    <span id="question-difficulty">
+                        EASY
+                    </span>
+
+                    <span>
+                        <span id="timer">
+                            15
+                        </span>s
+                    </span>
+
+                </div>
+
+                <div id="round-type-banner" class="round-type-banner">🎯 CLASSIC QUESTION</div>
+
+                <h1 id="question-text">
+                    Question
+                </h1>
+
+                <p id="song-instruction" class="song-instruction hidden">Listen to the 5-second clip and choose your answer.</p>
+                <audio id="song-audio" class="hidden" preload="auto"></audio>
+
+                <div
+                    id="answer-buttons"
+                    class="answers"
+                ></div>
+
+                <div
+                    id="answer-result"
+                    class="answer-result"
+                    aria-live="polite"
+                ></div>
+
+            </div>
+
+
+            <!-- LEADERBOARD -->
+
+            <div
+                id="leaderboard-phase"
+                class="game-phase hidden"
+            >
+
+                <p class="eyebrow">
+                    ROUND COMPLETE
+                </p>
+
+                <h1>
+                    Leaderboard
+                </h1>
+
+                <div id="leaderboard"></div>
+
+
+            </div>
+
+
+            <!-- GAMBLE -->
+
+            <div
+                id="gamble-phase"
+                class="game-phase hidden"
+            >
+
+                <p class="eyebrow">
+                    BONUS GAMBLE
+                </p>
+
+                <h1>
+                    Gamble your points?
+                </h1>
+
+                <p class="muted">
+                    A random bonus appears once during the game. Choose your stake before you spin.
+                </p>
+
+                <div class="gamble-stake">
+                    <label for="gamble-stake">Points to gamble</label>
+                    <input
+                        id="gamble-stake"
+                        type="number"
+                        min="1"
+                        value="1"
+                        inputmode="numeric"
+                    >
+                    <div id="multiplier-info" aria-live="polite">1 point staked · 2× multiplier if you hit</div>
+                </div>
+
+                <div class="slot-machine">
+
+                    <div class="slot-reels">
+
+                        <div id="reel-1">
+                            🍒
+                        </div>
+
+                        <div id="reel-2">
+                            ⭐
+                        </div>
+
+                        <div id="reel-3">
+                            💎
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="slot-result"
+                        class="slot-result"
+                        aria-live="polite"
+                    >
+                        Choose what to do.
+                    </div>
+
+                </div>
+
+                <div class="gamble-buttons">
+
+                    <button
+                        id="gamble-button"
+                        class="gamble-button"
+                        type="button"
+                    >
+                        🎰 Spin Bonus
+                    </button>
+
+                    <button
+                        id="keep-button"
+                        class="secondary-button"
+                        type="button"
+                    >
+                        ✓ Ready Up
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FINAL -->
+
+            <div
+                id="final-phase"
+                class="game-phase hidden"
+            >
+
+                <div class="phase-icon">
+                    🏆
+                </div>
+
+                <p class="eyebrow">
+                    GAME OVER
+                </p>
+
+                <h1>
+                    Final Results
+                </h1>
+
+                <div id="final-leaderboard"></div>
+
+                <button
+                    id="new-round-button"
+                    class="primary-button"
+                    type="button"
+                >
+                    Play Again
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase.js"></script>
+<script src="questions.js"></script>
+<script src="question_types.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
